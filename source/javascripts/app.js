@@ -5,7 +5,16 @@ $(function(){
 
   var ItemCollection = Backbone.Collection.extend({
     url: "items/index.json",
-    model: ItemModel
+    model: ItemModel,
+
+    fetch: function(options){
+      _self = this;
+      this.reset();
+      options = (options = {});
+      setTimeout(function(){
+        return Backbone.Collection.prototype.fetch.call(_self, options);
+      }, 1000);
+    }
   });
 
   var ItemView = Backbone.View.extend({
@@ -24,14 +33,14 @@ $(function(){
   var ListView = Backbone.View.extend({
     el: "#list",
     initialize: function(options){
-      this.items = new ItemCollection();
+      this.items = options.items;
       this.setEventListeners();
       this.items.fetch();
     },
 
     setEventListeners: function(){
-      _.bindAll(this, 'show');
-      _.bindAll(this, 'reset');
+      // _.bindAll(this, 'show');
+      // _.bindAll(this, 'reset');
       this.listenTo(this.items, 'add', this.addOne);
       this.listenTo(this.items, 'reset', this.addAll);
     },
@@ -45,25 +54,16 @@ $(function(){
     addAll:function(){
       var _self = this;
       this.$el.html("");
-      _self.items.fetch({success: this.show});
-    },
-
-    show: function(){
-      this.$el.slideDown(500);
-    },
-
-    hideAndReset: function(){
-      this.$el.slideUp(500, this.reset);
-    },
-
-    reset: function(){
-      this.items.reset();
+      _.each(this.items, function(item){
+        this.addOne(item);
+      });
     }
   });
 
-  var list = new ListView();
+  var items = new ItemCollection();
+  var list  = new ListView({items: items});
 
   $('button').click(function(e){
-    list.hideAndReset();
+    items.fetch();
   });
 });
