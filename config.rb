@@ -1,7 +1,7 @@
+activate :livereload
 ###
 # Compass
 ###
-
 # Susy grids in Compass
 # First: gem install susy
 # require 'susy'
