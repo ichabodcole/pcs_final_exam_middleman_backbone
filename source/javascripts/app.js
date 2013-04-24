@@ -21,23 +21,49 @@ $(function(){
     }
   });
 
-  var ItemList = Backbone.View.extend({
+  var ListView = Backbone.View.extend({
     el: "#list",
     initialize: function(options){
       this.items = new ItemCollection();
-      this.listenTo(this.items, 'add', this.addOne);
+      this.setEventListeners();
       this.items.fetch();
     },
 
+    setEventListeners: function(){
+      _.bindAll(this, 'show');
+      _.bindAll(this, 'reset');
+      this.listenTo(this.items, 'add', this.addOne);
+      this.listenTo(this.items, 'reset', this.addAll);
+    },
+
     addOne: function(model){
+      console.log("addOne");
       var item = new ItemView({model:model});
       this.$el.append(item.el);
     },
 
     addAll:function(){
+      var _self = this;
+      this.$el.html("");
+      _self.items.fetch({success: this.show});
+    },
 
+    show: function(){
+      this.$el.slideDown(500);
+    },
+
+    hideAndReset: function(){
+      this.$el.slideUp(500, this.reset);
+    },
+
+    reset: function(){
+      this.items.reset();
     }
   });
 
-  var list = new ItemList();
+  var list = new ListView();
+
+  $('button').click(function(e){
+    list.hideAndReset();
+  });
 });
