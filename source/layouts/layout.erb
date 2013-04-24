@@ -8,12 +8,11 @@
 
     <!-- Use title if it's in the page YAML frontmatter -->
     <title><%= data.page.title || "The Middleman" %></title>
-    <link rel="stylesheet" href="./vendor/bootstrap/bootstrap.min.css">
     <%= stylesheet_link_tag "normalize", "all" %>
-    <%= javascript_include_tag  "all" %>
   </head>
 
   <body class="<%= page_classes %>">
     <%= yield %>
+    <%= javascript_include_tag "jquery.min", "underscore.min", "backbone.min", "app" %>
   </body>
 </html>
